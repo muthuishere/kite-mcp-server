@@ -68,8 +68,8 @@ just init-env
 
 ```bash
 # Build and run
-go build -o kite-mcp-server
-./kite-mcp-server
+go build -o zkite
+./zkite
 
 # Or run directly
 go run main.go
@@ -83,34 +83,34 @@ You can also use the same binary as a local CLI for authentication and operation
 
 ```bash
 # Login once and persist token
-./kite-mcp-server cli login
+zkite cli login
 
 # Check token status
-./kite-mcp-server cli status
+zkite cli status
 
 # Run operations
-./kite-mcp-server cli profile
-./kite-mcp-server cli margins
-./kite-mcp-server cli holdings
-./kite-mcp-server cli positions
-./kite-mcp-server cli orders
-./kite-mcp-server cli trades
-./kite-mcp-server cli gtts
-./kite-mcp-server cli quotes --instruments NSE:INFY,NSE:SBIN
-./kite-mcp-server cli ltp --instruments NSE:INFY,NSE:SBIN
-./kite-mcp-server cli ohlc --instruments NSE:INFY,NSE:SBIN
-./kite-mcp-server cli order-history --order-id <ORDER_ID>
-./kite-mcp-server cli order-trades --order-id <ORDER_ID>
-./kite-mcp-server cli historical-data --instrument-token <TOKEN> --from "2025-01-01 09:15:00" --to "2025-01-31 15:30:00"
+zkite cli profile
+zkite cli margins
+zkite cli holdings
+zkite cli positions
+zkite cli orders
+zkite cli trades
+zkite cli gtts
+zkite cli quotes --instruments NSE:INFY,NSE:SBIN
+zkite cli ltp --instruments NSE:INFY,NSE:SBIN
+zkite cli ohlc --instruments NSE:INFY,NSE:SBIN
+zkite cli order-history --order-id <ORDER_ID>
+zkite cli order-trades --order-id <ORDER_ID>
+zkite cli historical-data --instrument-token <TOKEN> --from "2025-01-01 09:15:00" --to "2025-01-31 15:30:00"
 
 # Remove saved token
-./kite-mcp-server cli logout
+zkite cli logout
 ```
 
 Token storage defaults to `~/.kite-mcp/session.json`. Override with `KITE_TOKEN_PATH` or `--token-path`.
 
 For agent-style orchestration over this CLI flow, see:
-`.github/skills/kite-cli-orchestrator/skill.md`
+`.github/skills/zkite-agent-skill/skill.md`
 
 ## Client Integration
 
@@ -182,7 +182,7 @@ Add to your Claude Desktop configuration (`~/.config/Claude/claude_desktop_confi
 For self-hosted installations, you must first build the binary:
 
 ```bash
-go build -o kite-mcp-server
+go build -o zkite
 ```
 
 Then add to your Claude Desktop configuration (`~/.config/Claude/claude_desktop_config.json`):
@@ -191,7 +191,7 @@ Then add to your Claude Desktop configuration (`~/.config/Claude/claude_desktop_
 {
   "mcpServers": {
     "kite": {
-      "command": "/full/path/to/your/kite-mcp-server",
+      "command": "/full/path/to/your/zkite",
       "env": {
         "APP_MODE": "stdio",
         "KITE_API_KEY": "your_api_key",
@@ -204,9 +204,9 @@ Then add to your Claude Desktop configuration (`~/.config/Claude/claude_desktop_
 
 **Important**: Use the full absolute path to your built binary. For example:
 
-- `/home/username/kite-mcp-server/kite-mcp-server` (Linux)
-- `/Users/username/kite-mcp-server/kite-mcp-server` (macOS)
-- `C:\Users\username\kite-mcp-server\kite-mcp-server.exe` (Windows)
+- `/home/username/kite-mcp-server/zkite` (Linux)
+- `/Users/username/kite-mcp-server/zkite` (macOS)
+- `C:\Users\username\kite-mcp-server\zkite.exe` (Windows)
 
 ### Other MCP Clients
 

@@ -71,7 +71,7 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 }
 
 func printUsage(w io.Writer) {
-	fmt.Fprintln(w, "Usage: kite-mcp-server cli <command> [flags]")
+	fmt.Fprintln(w, "Usage: zkite cli <command> [flags]")
 	fmt.Fprintln(w, "")
 	fmt.Fprintln(w, "Auth commands:")
 	fmt.Fprintln(w, "  login            Start auth flow and save access token")
