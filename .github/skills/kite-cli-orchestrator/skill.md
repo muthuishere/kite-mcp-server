@@ -31,7 +31,7 @@ Replace MCP-first interactions with CLI-driven execution while preserving the sa
    - `kite-mcp-server cli ohlc --instruments NSE:INFY,NSE:SBIN`
    - `kite-mcp-server cli order-history --order-id <ORDER_ID>`
    - `kite-mcp-server cli order-trades --order-id <ORDER_ID>`
-   - `kite-mcp-server cli historical-data --instrument-token <TOKEN> --from "YYYY-MM-DD HH:MM:SS" --to "YYYY-MM-DD HH:MM:SS"`
+   - `kite-mcp-server cli historical-data --instrument-token <TOKEN> --from "2025-01-01 09:15:00" --to "2025-01-31 15:30:00"`
 5. Run logout when needed:
    - `kite-mcp-server cli logout`
 

@@ -15,6 +15,8 @@ import (
 	kiteconnect "github.com/zerodha/gokiteconnect/v4"
 )
 
+const errLoginRequired = "no saved token found. run the CLI login command first"
+
 func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
 		printUsage(stdout)
@@ -29,37 +31,37 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	case "logout":
 		return runLogout(args[1:], stdout, stderr)
 	case "profile":
-		return runAuthedRead(args[1:], stderr, func(client *kiteconnect.Client) (any, error) { return client.GetUserProfile() })
+		return runAuthedRead(args[1:], stdout, stderr, func(client *kiteconnect.Client) (any, error) { return client.GetUserProfile() })
 	case "margins":
-		return runAuthedRead(args[1:], stderr, func(client *kiteconnect.Client) (any, error) { return client.GetUserMargins() })
+		return runAuthedRead(args[1:], stdout, stderr, func(client *kiteconnect.Client) (any, error) { return client.GetUserMargins() })
 	case "holdings":
-		return runAuthedRead(args[1:], stderr, func(client *kiteconnect.Client) (any, error) { return client.GetHoldings() })
+		return runAuthedRead(args[1:], stdout, stderr, func(client *kiteconnect.Client) (any, error) { return client.GetHoldings() })
 	case "positions":
-		return runAuthedRead(args[1:], stderr, func(client *kiteconnect.Client) (any, error) { return client.GetPositions() })
+		return runAuthedRead(args[1:], stdout, stderr, func(client *kiteconnect.Client) (any, error) { return client.GetPositions() })
 	case "orders":
-		return runAuthedRead(args[1:], stderr, func(client *kiteconnect.Client) (any, error) { return client.GetOrders() })
+		return runAuthedRead(args[1:], stdout, stderr, func(client *kiteconnect.Client) (any, error) { return client.GetOrders() })
 	case "trades":
-		return runAuthedRead(args[1:], stderr, func(client *kiteconnect.Client) (any, error) { return client.GetTrades() })
+		return runAuthedRead(args[1:], stdout, stderr, func(client *kiteconnect.Client) (any, error) { return client.GetTrades() })
 	case "gtts":
-		return runAuthedRead(args[1:], stderr, func(client *kiteconnect.Client) (any, error) { return client.GetGTTs() })
+		return runAuthedRead(args[1:], stdout, stderr, func(client *kiteconnect.Client) (any, error) { return client.GetGTTs() })
 	case "order-history":
-		return runOrderScoped(args[1:], stderr, func(client *kiteconnect.Client, orderID string) (any, error) { return client.GetOrderHistory(orderID) })
+		return runOrderScoped(args[1:], stdout, stderr, func(client *kiteconnect.Client, orderID string) (any, error) { return client.GetOrderHistory(orderID) })
 	case "order-trades":
-		return runOrderScoped(args[1:], stderr, func(client *kiteconnect.Client, orderID string) (any, error) { return client.GetOrderTrades(orderID) })
+		return runOrderScoped(args[1:], stdout, stderr, func(client *kiteconnect.Client, orderID string) (any, error) { return client.GetOrderTrades(orderID) })
 	case "quotes":
-		return runInstrumentsScoped(args[1:], stderr, func(client *kiteconnect.Client, instruments []string) (any, error) {
+		return runInstrumentsScoped(args[1:], stdout, stderr, func(client *kiteconnect.Client, instruments []string) (any, error) {
 			return client.GetQuote(instruments...)
 		})
 	case "ltp":
-		return runInstrumentsScoped(args[1:], stderr, func(client *kiteconnect.Client, instruments []string) (any, error) {
+		return runInstrumentsScoped(args[1:], stdout, stderr, func(client *kiteconnect.Client, instruments []string) (any, error) {
 			return client.GetLTP(instruments...)
 		})
 	case "ohlc":
-		return runInstrumentsScoped(args[1:], stderr, func(client *kiteconnect.Client, instruments []string) (any, error) {
+		return runInstrumentsScoped(args[1:], stdout, stderr, func(client *kiteconnect.Client, instruments []string) (any, error) {
 			return client.GetOHLC(instruments...)
 		})
 	case "historical-data":
-		return runHistoricalData(args[1:], stderr)
+		return runHistoricalData(args[1:], stdout, stderr)
 	default:
 		fmt.Fprintf(stderr, "unknown cli command: %s\n\n", args[0])
 		printUsage(stderr)
@@ -223,7 +225,7 @@ func runLogout(args []string, stdout, stderr io.Writer) int {
 	return 0
 }
 
-func runAuthedRead(args []string, stderr io.Writer, fn func(client *kiteconnect.Client) (any, error)) int {
+func runAuthedRead(args []string, stdout, stderr io.Writer, fn func(client *kiteconnect.Client) (any, error)) int {
 	client, _, _, err := newAuthedClient(args, stderr)
 	if err != nil {
 		fmt.Fprintf(stderr, "error: %v\n", err)
@@ -236,7 +238,7 @@ func runAuthedRead(args []string, stderr io.Writer, fn func(client *kiteconnect.
 		return 1
 	}
 
-	if err := printJSON(os.Stdout, result); err != nil {
+	if err := printJSON(stdout, result); err != nil {
 		fmt.Fprintf(stderr, "error: %v\n", err)
 		return 1
 	}
@@ -244,7 +246,7 @@ func runAuthedRead(args []string, stderr io.Writer, fn func(client *kiteconnect.
 	return 0
 }
 
-func runOrderScoped(args []string, stderr io.Writer, fn func(client *kiteconnect.Client, orderID string) (any, error)) int {
+func runOrderScoped(args []string, stdout, stderr io.Writer, fn func(client *kiteconnect.Client, orderID string) (any, error)) int {
 	path, err := DefaultTokenPath()
 	if err != nil {
 		fmt.Fprintf(stderr, "error: %v\n", err)
@@ -276,14 +278,14 @@ func runOrderScoped(args []string, stderr io.Writer, fn func(client *kiteconnect
 		return 1
 	}
 
-	if err := printJSON(os.Stdout, result); err != nil {
+	if err := printJSON(stdout, result); err != nil {
 		fmt.Fprintf(stderr, "error: %v\n", err)
 		return 1
 	}
 	return 0
 }
 
-func runInstrumentsScoped(args []string, stderr io.Writer, fn func(client *kiteconnect.Client, instruments []string) (any, error)) int {
+func runInstrumentsScoped(args []string, stdout, stderr io.Writer, fn func(client *kiteconnect.Client, instruments []string) (any, error)) int {
 	path, err := DefaultTokenPath()
 	if err != nil {
 		fmt.Fprintf(stderr, "error: %v\n", err)
@@ -317,14 +319,14 @@ func runInstrumentsScoped(args []string, stderr io.Writer, fn func(client *kitec
 		return 1
 	}
 
-	if err := printJSON(os.Stdout, result); err != nil {
+	if err := printJSON(stdout, result); err != nil {
 		fmt.Fprintf(stderr, "error: %v\n", err)
 		return 1
 	}
 	return 0
 }
 
-func runHistoricalData(args []string, stderr io.Writer) int {
+func runHistoricalData(args []string, stdout, stderr io.Writer) int {
 	path, err := DefaultTokenPath()
 	if err != nil {
 		fmt.Fprintf(stderr, "error: %v\n", err)
@@ -373,7 +375,7 @@ func runHistoricalData(args []string, stderr io.Writer) int {
 		return 1
 	}
 
-	if err := printJSON(os.Stdout, result); err != nil {
+	if err := printJSON(stdout, result); err != nil {
 		fmt.Fprintf(stderr, "error: %v\n", err)
 		return 1
 	}
@@ -397,7 +399,7 @@ func newAuthedClient(args []string, stderr io.Writer) (*kiteconnect.Client, *Sto
 	session, err := LoadSession(*tokenPath)
 	if err != nil {
 		if errors.Is(err, ErrSessionNotFound) {
-			return nil, nil, "", fmt.Errorf("no saved token found. run 'kite-mcp-server cli login' first")
+			return nil, nil, "", fmt.Errorf(errLoginRequired)
 		}
 		return nil, nil, "", err
 	}
@@ -422,7 +424,7 @@ func authedClientFromSession(tokenPath, apiKeyOverride string) (*kiteconnect.Cli
 	session, err := LoadSession(tokenPath)
 	if err != nil {
 		if errors.Is(err, ErrSessionNotFound) {
-			return nil, fmt.Errorf("no saved token found. run 'kite-mcp-server cli login' first")
+			return nil, fmt.Errorf(errLoginRequired)
 		}
 		return nil, err
 	}

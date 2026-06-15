@@ -110,7 +110,7 @@ You can also use the same binary as a local CLI for authentication and operation
 Token storage defaults to `~/.kite-mcp/session.json`. Override with `KITE_TOKEN_PATH` or `--token-path`.
 
 For agent-style orchestration over this CLI flow, see:
-`/home/runner/work/kite-mcp-server/kite-mcp-server/muthuishere/kite-mcp-server/.github/skills/kite-cli-orchestrator/skill.md`
+`.github/skills/kite-cli-orchestrator/skill.md`
 
 ## Client Integration
 
