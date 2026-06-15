@@ -77,6 +77,41 @@ go run main.go
 
 The server will start and serve a status page at `http://localhost:8080/`
 
+### CLI Mode (Auth + Operations)
+
+You can also use the same binary as a local CLI for authentication and operational calls:
+
+```bash
+# Login once and persist token
+./kite-mcp-server cli login
+
+# Check token status
+./kite-mcp-server cli status
+
+# Run operations
+./kite-mcp-server cli profile
+./kite-mcp-server cli margins
+./kite-mcp-server cli holdings
+./kite-mcp-server cli positions
+./kite-mcp-server cli orders
+./kite-mcp-server cli trades
+./kite-mcp-server cli gtts
+./kite-mcp-server cli quotes --instruments NSE:INFY,NSE:SBIN
+./kite-mcp-server cli ltp --instruments NSE:INFY,NSE:SBIN
+./kite-mcp-server cli ohlc --instruments NSE:INFY,NSE:SBIN
+./kite-mcp-server cli order-history --order-id <ORDER_ID>
+./kite-mcp-server cli order-trades --order-id <ORDER_ID>
+./kite-mcp-server cli historical-data --instrument-token <TOKEN> --from "2025-01-01 09:15:00" --to "2025-01-31 15:30:00"
+
+# Remove saved token
+./kite-mcp-server cli logout
+```
+
+Token storage defaults to `~/.kite-mcp/session.json`. Override with `KITE_TOKEN_PATH` or `--token-path`.
+
+For agent-style orchestration over this CLI flow, see:
+`/home/runner/work/kite-mcp-server/kite-mcp-server/muthuishere/kite-mcp-server/.github/skills/kite-cli-orchestrator/skill.md`
+
 ## Client Integration
 
 ### Setup Guide

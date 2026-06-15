@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/zerodha/kite-mcp-server/app"
+	"github.com/zerodha/kite-mcp-server/cli"
 )
 
 var (
@@ -44,6 +45,11 @@ func initLogger() *slog.Logger {
 }
 
 func main() {
+	// CLI mode for local auth + operations orchestration
+	if len(os.Args) > 1 && os.Args[1] == "cli" {
+		os.Exit(cli.Run(os.Args[2:], os.Stdin, os.Stdout, os.Stderr))
+	}
+
 	// Check for version flag
 	if len(os.Args) > 1 && (os.Args[1] == "--version" || os.Args[1] == "-v") {
 		fmt.Printf("Kite MCP Server %s\n", MCP_SERVER_VERSION)
