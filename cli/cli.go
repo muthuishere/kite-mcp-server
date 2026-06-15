@@ -412,8 +412,7 @@ func newAuthedClient(args []string, stderr io.Writer) (*kiteconnect.Client, *Sto
 	client := kiteconnect.New(apiKey)
 	client.SetAccessToken(session.AccessToken)
 
-	session.LastUsedAt = time.Now().UTC()
-	if saveErr := SaveSession(*tokenPath, session); saveErr != nil {
+	if saveErr := markSessionUsed(*tokenPath, session); saveErr != nil {
 		return nil, nil, "", saveErr
 	}
 
@@ -436,11 +435,15 @@ func authedClientFromSession(tokenPath, apiKeyOverride string) (*kiteconnect.Cli
 
 	client := kiteconnect.New(apiKey)
 	client.SetAccessToken(session.AccessToken)
-	session.LastUsedAt = time.Now().UTC()
-	if err := SaveSession(tokenPath, session); err != nil {
+	if err := markSessionUsed(tokenPath, session); err != nil {
 		return nil, err
 	}
 	return client, nil
+}
+
+func markSessionUsed(tokenPath string, session *StoredSession) error {
+	session.LastUsedAt = time.Now().UTC()
+	return SaveSession(tokenPath, session)
 }
 
 func printJSON(w io.Writer, v any) error {
