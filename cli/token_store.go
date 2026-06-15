@@ -47,6 +47,7 @@ func SaveSession(path string, session *StoredSession) error {
 	}
 
 	dir := filepath.Dir(path)
+	// Keep token directory owner-only because it stores sensitive access tokens.
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return fmt.Errorf("failed to create session directory: %w", err)
 	}

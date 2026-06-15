@@ -16,6 +16,7 @@ import (
 )
 
 const msgLoginRequired = "no saved token found. run the CLI login command first"
+const dateTimeLayout = "2006-01-02 15:04:05"
 
 func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
@@ -352,12 +353,12 @@ func runHistoricalData(args []string, stdout, stderr io.Writer) int {
 		return 1
 	}
 
-	fromTime, err := time.Parse("2006-01-02 15:04:05", strings.TrimSpace(*from))
+	fromTime, err := time.Parse(dateTimeLayout, strings.TrimSpace(*from))
 	if err != nil {
 		fmt.Fprintf(stderr, "error: invalid --from format: %v\n", err)
 		return 1
 	}
-	toTime, err := time.Parse("2006-01-02 15:04:05", strings.TrimSpace(*to))
+	toTime, err := time.Parse(dateTimeLayout, strings.TrimSpace(*to))
 	if err != nil {
 		fmt.Fprintf(stderr, "error: invalid --to format: %v\n", err)
 		return 1
