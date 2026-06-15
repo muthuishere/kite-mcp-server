@@ -39,6 +39,17 @@ For self-hosting with your own API keys, follow the installation steps below.
 - **For self-hosting**: Go 1.21 or later
 - **For self-hosting**: Valid Kite Connect API credentials
 
+### Install zkite CLI
+
+The easiest way to install the `zkite` CLI is via Homebrew:
+
+```bash
+brew tap zerodha/tap
+brew install zkite
+```
+
+Or download a pre-built binary from [GitHub Releases](https://github.com/zerodha/kite-mcp-server/releases).
+
 ### Getting started
 
 ```bash
@@ -110,7 +121,7 @@ zkite cli logout
 Token storage defaults to `~/.kite-mcp/session.json`. Override with `KITE_TOKEN_PATH` or `--token-path`.
 
 For agent-style orchestration over this CLI flow, see:
-`.github/skills/zkite-agent-skill/skill.md`
+`skills/zkite-agent-skill/skill.md`
 
 ## Client Integration
 
