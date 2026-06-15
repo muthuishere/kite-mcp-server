@@ -15,7 +15,7 @@ import (
 	kiteconnect "github.com/zerodha/gokiteconnect/v4"
 )
 
-const errLoginRequired = "no saved token found. run the CLI login command first"
+const msgLoginRequired = "no saved token found. run the CLI login command first"
 
 func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
@@ -399,7 +399,7 @@ func newAuthedClient(args []string, stderr io.Writer) (*kiteconnect.Client, *Sto
 	session, err := LoadSession(*tokenPath)
 	if err != nil {
 		if errors.Is(err, ErrSessionNotFound) {
-			return nil, nil, "", fmt.Errorf(errLoginRequired)
+			return nil, nil, "", fmt.Errorf(msgLoginRequired)
 		}
 		return nil, nil, "", err
 	}
@@ -423,7 +423,7 @@ func authedClientFromSession(tokenPath, apiKeyOverride string) (*kiteconnect.Cli
 	session, err := LoadSession(tokenPath)
 	if err != nil {
 		if errors.Is(err, ErrSessionNotFound) {
-			return nil, fmt.Errorf(errLoginRequired)
+			return nil, fmt.Errorf(msgLoginRequired)
 		}
 		return nil, err
 	}
