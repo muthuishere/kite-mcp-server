@@ -7,7 +7,7 @@
 # Tests require GOEXPERIMENT=synctest (Go 1.23+) for time-dependent tests
 
 # Configuration variables
-BINARY_NAME := "kite-mcp.bin"
+BINARY_NAME := "zkite"
 GO_FLAGS := "CGO_ENABLED=0"
 TEST_FLAGS := "CGO_ENABLED=0 GOEXPERIMENT=synctest"
 TEST_RACE_FLAGS := "CGO_ENABLED=1 GOEXPERIMENT=synctest"

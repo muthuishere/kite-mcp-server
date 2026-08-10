@@ -39,6 +39,17 @@ For self-hosting with your own API keys, follow the installation steps below.
 - **For self-hosting**: Go 1.21 or later
 - **For self-hosting**: Valid Kite Connect API credentials
 
+### Install zkite CLI
+
+The easiest way to install the `zkite` CLI is via Homebrew:
+
+```bash
+brew tap zerodha/tap
+brew install zkite
+```
+
+Or download a pre-built binary from [GitHub Releases](https://github.com/zerodha/kite-mcp-server/releases).
+
 ### Getting started
 
 ```bash
@@ -68,14 +79,49 @@ just init-env
 
 ```bash
 # Build and run
-go build -o kite-mcp-server
-./kite-mcp-server
+go build -o zkite
+./zkite
 
 # Or run directly
 go run main.go
 ```
 
 The server will start and serve a status page at `http://localhost:8080/`
+
+### CLI Mode (Auth + Operations)
+
+You can also use the same binary as a local CLI for authentication and operational calls:
+
+```bash
+# Login once and persist token
+zkite cli login
+
+# Check token status
+zkite cli status
+
+# Run operations
+zkite cli profile
+zkite cli margins
+zkite cli holdings
+zkite cli positions
+zkite cli orders
+zkite cli trades
+zkite cli gtts
+zkite cli quotes --instruments NSE:INFY,NSE:SBIN
+zkite cli ltp --instruments NSE:INFY,NSE:SBIN
+zkite cli ohlc --instruments NSE:INFY,NSE:SBIN
+zkite cli order-history --order-id <ORDER_ID>
+zkite cli order-trades --order-id <ORDER_ID>
+zkite cli historical-data --instrument-token <TOKEN> --from "2025-01-01 09:15:00" --to "2025-01-31 15:30:00"
+
+# Remove saved token
+zkite cli logout
+```
+
+Token storage defaults to `~/.kite-mcp/session.json`. Override with `KITE_TOKEN_PATH` or `--token-path`.
+
+For agent-style orchestration over this CLI flow, see:
+`skills/zkite-agent-skill/skill.md`
 
 ## Client Integration
 
@@ -147,7 +193,7 @@ Add to your Claude Desktop configuration (`~/.config/Claude/claude_desktop_confi
 For self-hosted installations, you must first build the binary:
 
 ```bash
-go build -o kite-mcp-server
+go build -o zkite
 ```
 
 Then add to your Claude Desktop configuration (`~/.config/Claude/claude_desktop_config.json`):
@@ -156,7 +202,7 @@ Then add to your Claude Desktop configuration (`~/.config/Claude/claude_desktop_
 {
   "mcpServers": {
     "kite": {
-      "command": "/full/path/to/your/kite-mcp-server",
+      "command": "/full/path/to/your/zkite",
       "env": {
         "APP_MODE": "stdio",
         "KITE_API_KEY": "your_api_key",
@@ -169,9 +215,9 @@ Then add to your Claude Desktop configuration (`~/.config/Claude/claude_desktop_
 
 **Important**: Use the full absolute path to your built binary. For example:
 
-- `/home/username/kite-mcp-server/kite-mcp-server` (Linux)
-- `/Users/username/kite-mcp-server/kite-mcp-server` (macOS)
-- `C:\Users\username\kite-mcp-server\kite-mcp-server.exe` (Windows)
+- `/home/username/kite-mcp-server/zkite` (Linux)
+- `/Users/username/kite-mcp-server/zkite` (macOS)
+- `C:\Users\username\kite-mcp-server\zkite.exe` (Windows)
 
 ### Other MCP Clients
 
